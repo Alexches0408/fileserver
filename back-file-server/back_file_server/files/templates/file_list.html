@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>File List</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    {% if parrentfolder == "/files/folder/0" %}
+    <a href="{{parrentfolder}}">Вернуться на главную</a>
+    {% elif parrentfolder %}
+    <a href="{{parrentfolder}}">Вернуться в родительский каталог</a>
+    {% endif %}
+    <button id="openPopupBtn">Создать новую папку</button>
+<!-- Попап для создания папки -->
+    <div id="popup" class="popup">
+        <div class="popup-content">
+<!--            <span id="closePopupBtn" class="close-btn">&times;</span>-->
+            <form id="form_create_folder" action="{% url 'create_folder' %}">
+                {% csrf_token %}
+                <label for="name">Введите название папки</label>
+                <input type="text" id="name" name="name"><br>
+                <button type="submit">Создать папку</button>
+            </form>
+        </div>
+    </div>
+
+    <button id="openPopupFileFormBtn">Загрузить новые файлы</button>
+<!-- Попап для загрузки файлов-->
+    <div id="popupFileForm" class="popup">
+        <div class="popup-content">
+<!--            <span id="closePopupBtn" class="close-btn">&times;</span>-->
+            <form id="form_upload_file" action="{% url 'upload_file' %}">
+                {% csrf_token %}
+                <label for="file">Введите название папки</label>
+                <input type="file" id="file" name="file" multiple><br>
+                <button type="submit">Загрузить файлы</button>
+            </form>
+        </div>
+    </div>
+
+
+    <h1 class="has-context-menu">Перечень файлов</h1>
+
+
+    <ul>
+        {% for folder in folders %}
+            <li class="has-context-menu folder" data-folder-id="{{ folder.id }}" data-folder-name="{{ folder.name }}">
+                <a href="{% url 'folder_detail' folder.id %}">{{ folder }}</a>
+                (Created at: {{ folder.created_at }})
+                (Owner: {{ folder.owner }})
+                <form method="post">
+                    {% csrf_token %}
+                    <button class="delete-folder-button" data-folder-id="{{ folder.id }}">Удалить</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+    <ul>
+        {% for file in files %}
+            <li class="has-context-menu file" data-file-id="{{ file.id }}">
+                <a href="{{ file.file.url }}" download>{{ file }}</a>
+                (Uploaded at: {{ file.uploaded_at }})
+                <form method="post">
+                    {% csrf_token %}
+                    <button class="delete-button" data-file-id="{{ file.id }}">Удалить</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+    <form method="post" style="display: none;">
+        {% csrf_token %}
+    </form>
+    <div id="response"></div>
+    <script src="{% static 'js/script.js' %}"></script>
+    {% if messages %}
+        <script>
+            {% for message in messages %}
+                alert("{{ message|escapejs }}");
+            {% endfor %}
+        </script>
+    {% endif %}
+</body>
+
+</html>

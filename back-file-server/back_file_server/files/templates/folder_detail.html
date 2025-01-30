@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File List</title>
+    <script src="{% static 'js/script.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <button>Вернуться назад</button>
+
+    <button id="openPopupBtn">Создать новую папку</button>
+<!-- Попап -->
+    <div id="popup" class="popup">
+        <div class="popup-content">
+<!--            <span id="closePopupBtn" class="close-btn">&times;</span>-->
+            <form method="post">
+                {% csrf_token %}
+                <p>Введите название папки</p>
+                {{ create_folder_form.name }}
+                <button type="submit" name="create_folder">Создать папку</button>
+            </form>
+        </div>
+    </div>
+
+    <button id="openPopupFileFormBtn">Загрузить новые файлы</button>
+<!-- Попап -->
+    <div id="popupFileForm" class="popup">
+        <div class="popup-content">
+<!--            <span id="closePopupBtn" class="close-btn">&times;</span>-->
+           <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ upload_file_form.as_p }}
+                <button type="submit" name="upload_file">Загрузить файл</button>
+            </form>
+        </div>
+    </div>
+
+
+    <h1>Перечень файлов</h1>
+
+
+    <ul>
+        {% for folder in folders %}
+            <li>
+                <a href="{% url 'folder_detail' folder.id %}">{{ folder }}</a>
+                (Created at: {{ folder.created_at }})
+                (Owner: {{ folder.owner }})
+            </li>
+        {% endfor %}
+    </ul>
+    <ul>
+        {% for file in files %}
+            <li>
+                <a href="{{ file.file.url }}" download>{{ file }}</a>
+                (Uploaded at: {{ file.uploaded_at }})
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

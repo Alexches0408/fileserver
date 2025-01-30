@@ -1,0 +1,8 @@
+<h1>Создать новую папку</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Создать</button>
+</form>
+
+<script src="{% static 'js/createfolder.js' %}"></script>

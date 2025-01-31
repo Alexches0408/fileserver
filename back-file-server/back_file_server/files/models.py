@@ -1,9 +1,5 @@
 from django.db import models
-from django.shortcuts import render, redirect
 from django.conf import settings
-from django.db.models.signals import post_delete
-from django.dispatch import receiver
-import os
 
 
 
@@ -20,19 +16,15 @@ class Folder(models.Model):
 
 class File(models.Model):
     file = models.FileField(upload_to='uploads/')
+    thumbnail = models.ImageField(upload_to='thumbnails/', null=True, blank=True)
+    icon = models.CharField(max_length=255, null=True, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=255, blank=True)
     folder = models.ForeignKey(Folder, related_name='files', null=True, blank=True, on_delete=models.CASCADE)
+    is_processing_thumbnail = models.BooleanField(default=False)
 
     def __str__(self):
         return self.description if self.description else f"File {self.id}"
 
 
-# Сигнал для удаления файла после удаления объекта
-@receiver(post_delete, sender=File)
-def delete_file_from_system(sender, instance, **kwargs):
-    if instance.file and os.path.isfile(instance.file.path):
-        try:
-            os.remove(instance.file.path)
-        except Exception as e:
-            print(f"Ошибка при удалении файла: {e}")
+

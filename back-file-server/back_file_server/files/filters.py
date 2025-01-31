@@ -1,6 +1,8 @@
 from django_filters import rest_framework as filters
 from .models import File, Folder
 
+# Фильтр для файлов. Если мы на главной, получаем все файлы без поля folder
+# Если находимся в каталоге, получаем все файлы с полем folder равным текущему каталогу
 class FileModelFilter(filters.FilterSet):
     folder_is_empty = filters.BooleanFilter(
         field_name="folder",
@@ -22,6 +24,8 @@ class FileModelFilter(filters.FilterSet):
         return queryset.filter(folder__isnull=False)
 
 
+# Фильтр для каталогов. Если мы на главной, получаем все каталоги без родителя
+# Если находимся в каталоге, получаем все файлы с родителем, равным текущему каталогу
 class FolderModelFilter(filters.FilterSet):
     parent_folder_is_empty = filters.BooleanFilter(
         field_name="parent_folder",

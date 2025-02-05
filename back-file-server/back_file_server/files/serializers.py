@@ -5,9 +5,10 @@ from .models import File, Folder
 class FolderSerializer(serializers.ModelSerializer):
     childfolder = serializers.SerializerMethodField()
     full_path = serializers.SerializerMethodField()
+    file_tree = serializers.SerializerMethodField()
     class Meta:
         model = Folder
-        fields = ['id', 'name', 'parent_folder', 'owner', 'created_at', 'files', 'childfolder', 'full_path']
+        fields = ['id', 'name', 'parent_folder', 'owner', 'created_at', 'files', 'childfolder', 'full_path', 'file_tree']
 
     # Получаем все дочерние каталоги для текущего каталога и сериализируем их
     def get_childfolder(self, obj):
@@ -23,6 +24,31 @@ class FolderSerializer(serializers.ModelSerializer):
             path[current.id] = current.name
             current = current.parent_folder
         return path
+
+    def get_folder_tree(self, folder):
+        files={}
+        for file in folder.files.all():
+            files[str(file.id)]=str(file.file)
+        return {
+            "id":folder.id,
+            "name":folder.name,
+            "childfiles": files,
+            "childfolders": [self.get_folder_tree(folder) for folder in folder.childfolder.all()]
+        }
+
+    def get_file_tree(self, obj):
+        tree={}
+        files = {}
+        initial_folders = Folder.objects.filter(parent_folder__isnull=True)
+        initial_files = File.objects.filter(folder__isnull=True)
+        for folder in initial_folders:
+            tree[folder.id] = self.get_folder_tree(folder)
+        for file in initial_files:
+            files[str(file.id)] = str(file.file)
+        tree["files"]=files
+        return tree
+
+
 
 # Сериалайзер для файлов
 class FileSerializer(serializers.ModelSerializer):

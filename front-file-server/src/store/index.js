@@ -12,6 +12,7 @@ const store = createStore({
             token: localStorage.getItem("accessToken") || null,
             refreshToken: localStorage.getItem("refreshToken") || null,
             user: null,
+            tree: null,
         };
     },
     mutations: {
@@ -43,7 +44,10 @@ const store = createStore({
         },
         SET_USER(state, user) {
             state.user = user;
-        }
+        },
+        SET_TREE(state, payload) {
+            state.tree = payload;
+          },
     },
     actions: {
         async fetchFiles({commit}) {
@@ -155,7 +159,20 @@ const store = createStore({
         async logout({ commit }) {
             commit("CLEAR_TOKENS");
             commit("SET_USER", null);
-        }
+        },
+        connectWebSocket({ commit }) {
+            const socket = new WebSocket("ws://127.0.0.1:8000/ws/json-updates/");
+            socket.onmessage = (event) => {
+            const newData = JSON.parse(event.data);
+            commit("SET_TREE", newData); // Обновляем хранилище
+            };
+            
+    
+            socket.onerror = (error) => {
+            console.error("Ошибка WebSocket:", error);
+            };
+        },
+         
     }, 
     getters: {
         current_folder: (state) => state.current_folder,

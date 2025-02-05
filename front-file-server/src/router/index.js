@@ -1,8 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import LoginForm from '@/components/LoginForm.vue'
-import RegisterForm from '@/components/RegisterForm.vue'
-import FileList from '@/components/FileList.vue'
-import store from '@/store'
+import LoginForm from '../components/LoginForm.vue'
+import RegisterForm from '../components/RegisterForm.vue'
+import FileList from '../components/FileList.vue'
+import store from '../store'
 
 
 const routes = [

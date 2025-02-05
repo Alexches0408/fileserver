@@ -1,10 +1,13 @@
 import os
 import io
+import json
 from PIL import Image
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.core.files.base import ContentFile
-from .models import File
+from .models import File, Folder
 
 # Удаление файлов и миниатюр из медиа после удаления объектов из базы
 @receiver(post_delete, sender=File)
@@ -57,3 +60,48 @@ def assign_file_icon(sender, instance, created, **kwargs):
         file_icon = get_file_icon(instance.file.name)
         instance.icon = file_icon
         instance.save()
+
+
+def get_folder_tree(folder):
+    files={}
+    for file in folder.files.all():
+        files[str(file.id)]=str(file.file)
+    return {
+        "id":folder.id,
+        "name":folder.name,
+        "childfiles": files,
+        "childfolders": [get_folder_tree(folder) for folder in folder.childfolder.all()]
+    }
+
+def get_file_tree():
+    tree={}
+    files = {}
+    initial_folders = Folder.objects.filter(parent_folder__isnull=True)
+    initial_files = File.objects.filter(folder__isnull=True)
+    for folder in initial_folders:
+        tree[folder.id] = get_folder_tree(folder)
+    for file in initial_files:
+        files[str(file.id)] = str(file.file)
+    tree["files"]=files
+    return tree
+
+def save_to_json():
+    """Сохранение всех объектов модели в JSON-файл."""
+    data = get_file_tree()  # Получаем все объекты как список словарей
+    print(data)
+    with open("static/data/data.json", "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4, ensure_ascii=False)
+
+    # Отправка обновлённых данных в WebSocket
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        "json_updates_group",
+        {"type": "send_json_update", "data": data},
+    )
+
+@receiver(post_save, sender=File)
+@receiver(post_save, sender=Folder)
+@receiver(post_delete, sender=File)
+@receiver(post_delete, sender=Folder)
+def model_changed(sender, **kwargs):
+    save_to_json()

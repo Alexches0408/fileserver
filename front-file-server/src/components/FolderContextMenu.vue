@@ -18,16 +18,16 @@ export default {
         return {
             visible: false,
             position: {x:0, y:0},
-            fileId:"",
+            folderId:"",
             elemType:"",
         };
     },
     methods: {
-        ...mapActions(["deleteFile"]),
-         showContext(event, fileId) {
+        ...mapActions(["deleteFolder"]),
+        showContext(event, folderId) {
             event.preventDefault();
             this.position= {x: event.clientX, y: event.clientY};
-            this.fileId = fileId;
+            this.folderId = folderId;
             this.visible=true;
          },
          hideMenu() {
@@ -35,8 +35,9 @@ export default {
          },
          handleAction(action) {
             if (action=="удалить") {
-                this.deleteFile(this.fileId);
-                this.fileId = "";               
+                console.log(this.folderId)
+                this.deleteFolder(this.folderId);
+                this.folderId = "";               
             }
             this.hideMenu();
          },

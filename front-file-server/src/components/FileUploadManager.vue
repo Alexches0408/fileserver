@@ -1,9 +1,12 @@
 <template>
-    <div>
-      <form @submit.prevent="uploadFile">
-        <input type="file" multiple @change="onFilesChange" ref="fileInput" />
-        <button type="submit">Загрузить файл</button>
-      </form>
+    <div id="file-upload">
+      <input type="file" multiple @change="onFilesChange" ref="fileInput" style="display: none;"/>
+      <div v-for="(file,index) in selectedFiles" class="me-3">
+        {{ file.name }}
+        <span @click="removeFile(index)" :key="index" class="text-danger"> X</span>
+      </div>
+      <div v-if="selectedFiles.length===0" @click="triggerInputButton()" class="custom-input">Выбрать файлы</div>
+      <div v-if="selectedFiles.length>0" @click="uploadFile()" class="custom-input">Загрузить файл</div>
     </div>
   </template>
 
@@ -20,6 +23,7 @@
     },
     computed: {
       ...mapGetters(["current_folder", "files"])
+
     },
     methods: {
       ...mapActions(["createFile"]),
@@ -51,10 +55,40 @@
         this.renamed_files = []
         this.$refs.fileInput.value = '';
       },
+      triggerInputButton(){
+        this.$refs.fileInput.click();
+      },
+      removeFile(index){
+        this.selectedFiles.splice(index,1)
+      }
     },
   };
   </script>
   
   <style>
-  /* Добавьте свои стили */
+  #file-upload{
+    width: 90%;
+    min-height: 80px;
+    justify-self: center;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 16px;
+    border-radius: 5px;
+    border: solid 1px #c9cacd;
+    background-color: #fff;
+  }
+
+  .custom-input {
+    width: 129px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 10px;
+    border-radius: 5px;
+    background-color: #f8d447;
+    margin-left: auto;
+  }
   </style>

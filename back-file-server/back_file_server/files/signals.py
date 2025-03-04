@@ -65,7 +65,7 @@ def assign_file_icon(sender, instance, created, **kwargs):
 def get_folder_tree(folder):
     files={}
     for file in folder.files.all():
-        files[str(file.id)]=str(file.file)
+        files[str(file.file)]=str(file.description)
     return {
         "id":folder.id,
         "name":folder.name,
@@ -81,7 +81,7 @@ def get_file_tree():
     for folder in initial_folders:
         tree[folder.id] = get_folder_tree(folder)
     for file in initial_files:
-        files[str(file.id)] = str(file.file)
+        files[str(file.file)] = str(file.description)
     tree["files"]=files
     return tree
 

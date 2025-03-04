@@ -15,7 +15,7 @@ class FileViewSet(ModelViewSet):
     parser_classes = [MultiPartParser, FormParser]
     filter_backends = [DjangoFilterBackend]
     filterset_class = FileModelFilter
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     # переопределяем метод загрузки файла чтобы можно было загружать по несколько файлов
     # Поочередно для каждого файла создаем экземпляры объектов
@@ -40,7 +40,19 @@ class FileViewSet(ModelViewSet):
         serializer = self.get_serializer(file_instances, many=True)
         return Response(serializer.data, status=201)
 
+    def update(self, request, *args, **kwargs):
+        # Получаем объект для обновления
+        instance = self.get_object()
 
+        # Создаем сериализатор с учетом данных из запроса и текущего объекта
+        serializer = self.get_serializer(instance, data=request.data, partial=True)  # `partial=True` для PATCH-запросов
+        serializer.is_valid(raise_exception=True)  # Проверка валидности данных
+
+        # Если данные валидны, сохраняем обновленный объект
+        serializer.save()
+
+        # Возвращаем ответ с обновленными данными
+        return Response(serializer.data)
 
 # Вьюсет для каталогов. Определяем фильтры и разрешения
 class FolderViewSet(ModelViewSet):
@@ -48,7 +60,7 @@ class FolderViewSet(ModelViewSet):
     serializer_class = FolderSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = FolderModelFilter
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 # Переопределяем метод создания каталога чтобы отличать каталоги имеющие родителей от
 # не имеющих

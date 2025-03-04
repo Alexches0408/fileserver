@@ -1,3 +1,44 @@
 {
-    "files": {}
+    "1": {
+        "id": 1,
+        "name": "Новая папка",
+        "childfiles": {},
+        "childfolders": [
+            {
+                "id": 5,
+                "name": "Новая папка",
+                "childfiles": {},
+                "childfolders": []
+            }
+        ]
+    },
+    "4": {
+        "id": 4,
+        "name": "Привет",
+        "childfiles": {},
+        "childfolders": []
+    },
+    "10": {
+        "id": 10,
+        "name": "Новая папка 7",
+        "childfiles": {},
+        "childfolders": []
+    },
+    "12": {
+        "id": 12,
+        "name": "Новая папка 6",
+        "childfiles": {},
+        "childfolders": []
+    },
+    "16": {
+        "id": 16,
+        "name": "Новая папка 2",
+        "childfiles": {},
+        "childfolders": []
+    },
+    "files": {
+        "uploads/Новый_текстовый_документ_2.txt": "Новый текстовый документ (2).txt",
+        "uploads/Без_названия__копия.jpg": "Без названия — копия.jpg",
+        "uploads/Без_названия_1.jpg": "Без названия (1).jpg"
+    }
 }

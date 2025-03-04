@@ -24,7 +24,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email', 'phone_number', 'password', 'token']
 
     def create(self, validated_data):
-        return CustomUser.objects.create_user(username=validated_data["username"], password=validated_data["password"], phone_number=validated_data["phone_number"])
+        return CustomUser.objects.create_user(username=validated_data["username"], password=validated_data["password"])
 
     def update(self, instance, validated_data):
         password = validated_data.pop('password', None)

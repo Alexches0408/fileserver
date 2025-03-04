@@ -44,8 +44,8 @@ INSTALLED_APPS = [
     'django_filters',
     'corsheaders',
     'rest_framework',
-    # 'rest_framework_simplejwt',
-    # 'rest_framework_simplejwt.token_blacklist',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'files',
     'users',
 ]
@@ -152,13 +152,16 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ),
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',  # Парсер для JSON
+    ],
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),  # Срок действия access-токена
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=100),  # Срок действия access-токена
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  # Срок действия refresh-токена
     'ROTATE_REFRESH_TOKENS': True,  # Обновление refresh-токена при каждом запрос
     'BLACKLIST_AFTER_ROTATION': True,  # Блокировка старого refresh-токена после обновления
@@ -168,8 +171,11 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Для разработки Vue.js
-    "https://example.com",    # Пример домена для production
 ]
+
+ # Allow cookies and authentication headers
+CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"]
+CORS_ALLOW_HEADERS = ["Authorization", "Content-Type"]
 
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',  # Основной

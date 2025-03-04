@@ -1,0 +1,9 @@
+<svg width="90" height="90" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M9.004 31.563v41.216a2 2 0 0 0 2 2h67.995a2 2 0 0 0 2-2L81 27.297a1 1 0 0 0-1-1H45.314L34.945 15.22H10a1 1 0 0 0-1 1c.001 2.742.004 10.496.004 15.343z" fill="url(#dwsvwmvcla)" stroke="#F8D447" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <defs>
+        <linearGradient id="dwsvwmvcla" x1="9" y1="15" x2="81" y2="75" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#FFEFB0"/>
+            <stop offset="1" stop-color="#FFCB00"/>
+        </linearGradient>
+    </defs>
+</svg>

@@ -6,6 +6,8 @@ from rest_framework_simplejwt.views import (
 )
 from .views import RegisterView
 
+
+
 app_name = 'authentication'
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
